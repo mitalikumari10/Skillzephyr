@@ -1,0 +1,118 @@
+/* src/components/movies/Movies.css */
+
+.carousel-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 90px;
+}
+
+.carousel-content {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.movie-container {
+  display: flex;
+  width: 100%;
+}
+
+.movie-details {
+  width: 300px;
+  padding: 20px;
+  color: white;
+}
+
+.movie-banner {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 310px;
+  overflow: hidden;
+}
+
+.movie-banner img,
+.movie-banner video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Movie Cards CSS */
+.topmovies 
+{
+  margin-top:153px;
+  color: white;
+  margin-left: 23px;
+}
+.movieCards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 20px;
+  gap: 20px;
+}
+
+.movieCard1, .movieCard2, .movieCard3, .movieCard4, .movieCard5 {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  flex: 1 0 21%; /* Makes each card take 21% of the container's width */
+  box-sizing: border-box;
+  margin: 10px; /* Adds margin around each card */
+}
+
+.movieCard1 img, .movieCard2 img, .movieCard3 img, .movieCard4 img, .movieCard5 img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.placeholder-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 150px;
+  background-color: #f0f0f0;
+  color: #aaa;
+  font-size: 16px;
+}
+
+.movieCard1 h3, .movieCard2 h3, .movieCard3 h3, .movieCard4 h3, .movieCard5 h3 {
+  margin: 8px 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.movieCard1 h4, .movieCard2 h4, .movieCard3 h4, .movieCard4 h4, .movieCard5 h4 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: #777;
+}
+
+.timerate {
+  display: flex;
+  justify-content: space-around;
+  padding: 4px 0;
+  background-color: #f9f9f9;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  font-size: 12px;
+}
+
+.timerate p {
+  margin: 0;
+  color: #555;
+}
+
+.movieCard1 p, .movieCard2 p, .movieCard3 p, .movieCard4 p, .movieCard5 p {
+  margin: 4px 16px;
+  font-size: 12px;
+  color: #666;
+}

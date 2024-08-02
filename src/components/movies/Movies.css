@@ -1,0 +1,154 @@
+/* src/components/movies/Movies.css */
+
+.carousel-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 90px;
+}
+
+.carousel-content {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.movie-container {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.movie-details {
+  width: 300px;
+  padding: 20px;
+  color: white;
+}
+
+.movie-banner {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 310px;
+  overflow: hidden;
+}
+
+.movie-banner img,
+.movie-banner video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* General Styling for Top Movies Section */
+.topmovies {
+  margin-top: 153px;
+  color: white;
+  margin-left: 23px;
+}
+
+/* Movie Cards Container */
+.movieCards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 20px;
+  gap: 10px;
+}
+
+/* Styling for Each Movie Card */
+.movieCard {
+  position: relative;
+  width: 290px; /* Width of the image */
+  height: 150px; /* Height of the image */
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  text-align: center;
+}
+
+/* Image Styling */
+.movieCard img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Details Box Styling (Initially Hidden) */
+.movieCardDetails {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000; /* Black background */
+  color: white;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  padding: 10px;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-align: left;
+}
+
+/* Show Details on Hover */
+.movieCard:hover .movieCardDetails {
+  opacity: 1;
+}
+
+/* Text Styling Inside Details Box */
+.movieCardDetails h3,
+.movieCardDetails h4,
+.movieCardDetails p {
+  margin: 4px 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Responsive Styles */
+
+/* Small screens (phones) */
+@media (max-width: 768px) {
+  .carousel-slide {
+    margin-top: 50px;
+  }
+
+  .carousel-content {
+    padding: 10px;
+  }
+
+  .movie-details {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .movie-banner {
+    height: 200px;
+  }
+
+  .topmovies {
+    margin-top: 100px;
+    margin-left: 10px;
+  }
+
+  .movieCards {
+    padding: 10px;
+  }
+
+  .movieCard {
+    width: 100%;
+    height: auto;
+    margin: 5px 0;
+  }
+}
+
+/* Medium screens (tablets) */
+@media (max-width: 1024px) {
+  .movieCard {
+    width: 45%;
+    height: auto;
+    margin: 5px;
+  }
+}

@@ -1,0 +1,107 @@
+.faq {
+    color: #BBB911; /* Checkmark color */
+    font-size: 35px;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    margin-top: 170px;
+    margin-bottom: 80PX;
+}
+
+.faq-container {
+    margin: 60px auto;
+    margin-top: 25px;
+    width: 100%;
+    max-width: 750px;
+}
+
+.course-selector {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.course-button {
+    background: #303030;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px 10px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+.course-button:hover,
+.course-button.active {
+    background: #414141;
+}
+
+.course-faq {
+    margin-bottom: 40px;
+}
+
+.course-faq h3 {
+    color: white;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.faq-item {
+    list-style: none;
+    width: 100%;
+    padding: 5px;
+    background: #303030;
+    margin-bottom: 2px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.faq-item label {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    font-size: 18px;
+    font-weight: 500;
+    background: #303030;
+    color: white;
+    position: relative;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.faq-item label:hover {
+    background-color: #414141;
+}
+
+.faq-item input[type="checkbox"] {
+    display: none;
+}
+
+.faq-item .faq-question {
+    flex: 1;
+}
+
+.faq-item .faq-icon {
+    font-size: 24px;
+    transition: transform 0.3s ease;
+}
+
+.faq-item input[type="checkbox"]:checked + label .faq-icon {
+    transform: rotate(45deg);
+}
+
+.faq-item .content {
+    background: #303030;
+    text-align: left;
+    padding: 0 20px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease, padding 0.5s ease;
+}
+
+.faq-item input[type="checkbox"]:checked + label + .content {
+    max-height: 600px;
+    padding: 30px 20px;
+}

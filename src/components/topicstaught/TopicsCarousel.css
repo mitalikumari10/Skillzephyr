@@ -1,0 +1,89 @@
+/* Default Dark Theme */
+.carousel-container {
+    width: 100vw; /* Full viewport width */
+    height: 100vh; /* Full viewport height */
+    overflow: hidden;
+    position: relative;
+    padding: 20px; /* Adjusted padding for better spacing */
+    background-color: #1B1B1B; /* Dark background color */
+    margin-top: 17px;
+}
+
+.carousel-track {
+    display: flex;
+    white-space: nowrap;
+    margin-bottom: 10px;
+    max-width: 100%;
+}
+
+.carousel-item {
+    min-width: 170px; /* Adjusted for better visibility on larger screens */
+    height: 40px; /* Adjusted for better visibility on larger screens */
+    margin: 0 10px; /* Increased margin for better spacing */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #007bff; /* Dark theme background color */
+    color: #fff; /* Dark theme text color */
+    border-radius: 5px;
+    padding: 10px; /* Increased padding for better spacing */
+    font-size: 1em; /* Responsive font size */
+}
+
+/* Light Theme */
+body.light-mode .carousel-container {
+    background-color:gainsboro;
+    color: black;
+  }
+
+.carousel-container.light-mode .carousel-item {
+    background-color: #007bff; /* Background color remains the same for visibility */
+    color: black; /* Light theme text color */
+}
+
+/* Adjust animation duration based on screen size */
+@media (max-width: 600px) { /* Mobile devices */
+    .carousel-item {
+        min-width: 120px;
+        height: 35px;
+        font-size: 0.9em;
+        margin: 0 8px;
+        padding: 8px;
+    }
+}
+
+@media (min-width: 601px) and (max-width: 1024px) { /* Tablets and small laptops */
+    .carousel-item {
+        min-width: 130px;
+        height: 35px;
+        font-size: 0.95em;
+        margin: 0 10px;
+        padding: 8px;
+    }
+}
+
+.left-to-right {
+    animation: scrollLeftToRight 20s linear infinite;
+}
+
+.right-to-left {
+    animation: scrollRightToLeft 20s linear infinite;
+}
+
+@keyframes scrollLeftToRight {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes scrollRightToLeft {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}

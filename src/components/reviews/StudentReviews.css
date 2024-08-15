@@ -1,0 +1,70 @@
+/* StudentReviews.css */
+.reviews-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 boxes per row */
+    gap: 20px;
+    padding: 20px;
+    height: 100vh; /* Full viewport height */
+    width: 90%; /* Full viewport width */
+    box-sizing: border-box; /* Includes padding in the total width and height */
+    margin-top: 30PX;
+}
+
+.review-box {
+    background-color: #2A323C;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    color: #fff; /* Adjusted text color for better visibility on dark background */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+.review-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.profile-pic {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 15px; /* Space between profile picture and text */
+}
+
+.review-content {
+    flex: 1;
+}
+
+.reviewer-name {
+    font-size: 1.1em;
+    margin-bottom: 5px;
+    color: #fff; /* Adjusted text color */
+}
+
+.review-text {
+    font-size: 0.9em;
+    color: #ddd; /* Lighter color for description */
+    text-align: left; /* Align text to the left */
+}
+
+/* Responsive Layout Adjustments */
+@media (max-width: 1200px) { /* Tablets and smaller laptops */
+    .reviews-container {
+        grid-template-columns: repeat(3, 1fr); /* 3 boxes per row */
+    }
+}
+
+@media (max-width: 900px) { /* Larger mobile devices */
+    .reviews-container {
+        grid-template-columns: repeat(2, 1fr); /* 2 boxes per row */
+    }
+}
+
+@media (max-width: 600px) { /* Mobile devices */
+    .reviews-container {
+        grid-template-columns: 1fr; /* 1 box per row */
+    }
+}

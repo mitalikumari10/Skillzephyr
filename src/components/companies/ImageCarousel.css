@@ -1,0 +1,58 @@
+.image-carousel-container {
+    width: 100vw; /* Full viewport width */
+    height: 100vh; /* Full viewport height */
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1B1B1B; /* Background color */
+    margin-top: 25px;
+}
+
+body.light-mode .image-carousel-container {
+    background-color:gainsboro;
+    color: black;
+  }
+
+.image-carousel-track {
+    display: flex;
+    animation: imageScroll 30s linear infinite; /* Adjusted scroll speed for continuous loop */
+}
+
+.image-carousel-image {
+    width: 8vw; /* Responsive width: 7% of viewport width */
+    height: 9vh;
+    flex-shrink: 0;
+    padding: 10px 20px;
+}
+
+@keyframes imageScroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(calc(-100% / 3)); /* Adjust based on full width */
+    }
+}
+
+/* Responsive adjustments for Tablets and smaller devices */
+@media (max-width: 1024px) { /* Laptops and tablets */
+    .image-carousel-image {
+        width: 10vw; /* Adjust image size for tablets */
+    }
+}
+
+/* Responsive adjustments for Mobile devices */
+@media (max-width: 768px) { /* Tablets and smaller devices */
+    .image-carousel-image {
+        width: 20vw; /* Adjust image size for tablets and small phones */
+    }
+}
+
+/* Further adjustments for smaller screens */
+@media (max-width: 480px) { /* Mobile devices */
+    .image-carousel-image {
+        width: 30vw; /* Increase image size for mobile screens */
+    }
+}

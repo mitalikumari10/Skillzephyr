@@ -1,92 +1,190 @@
-import React from 'react';
+// src/pages/Homepage.js
+import React, { useState, useEffect, useRef } from 'react';
+import { useTypewriter } from 'react-simple-typewriter';
 import './Homepage.css';
-import banner1 from './images/banner1.jpg';
-import banner2 from './images/banner2.jpg';
-
+import Slider from 'react-slick';
+import axios from 'axios';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import TopicsCarousel from '../topicstaught/TopicsCarousel';
+import CoreOfferings from '../coreoffering/CoreOfferings';
+import ImageCarousel from '../companies/ImageCarousel';
+import StudentReviews from '../reviews/StudentReviews';
+import { useNavigate } from 'react-router-dom';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import ParticlesComponent from '../particles';
 
 function Homepage() {
+  const [text] = useTypewriter({
+    words: ['Data Structures & Algorithms', 'AWS Cloud Development', 'MERN Stack Development'],
+    loop: true,
+    typeSpeed: 50,
+    deleteSpeed: 50,
+  });
 
+  const [activeSlide, setActiveSlide] = useState(1);
+  const [slide2Movies, setSlide2Movies] = useState([]);
+  const [playingSlide2Trailer, setPlayingSlide2Trailer] = useState(null);
+  const [muted, setMuted] = useState(true);
+  const slide2VideoRefs = useRef([]);
+  const navigate = useNavigate();
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  useEffect(() => {
+    const fetchSlide2Movies = async () => {
+      try {
+        const response = await axios.get('https://sgqwlraw02.execute-api.us-east-1.amazonaws.com/dev/items');
+        setSlide2Movies(response.data);
+      } catch (error) {
+        console.error('Error fetching movie data:', error);
+      }
+    };
+    fetchSlide2Movies();
+  }, []);
+
+  useEffect(() => {
+    slide2VideoRefs.current.forEach((video) => {
+      if (video) {
+        video.muted = muted;
+      }
+    });
+  }, [muted]);
+
+  const slide2Settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 2000,
+    pauseOnHover: true,
+    beforeChange: () => {
+      setPlayingSlide2Trailer(null);
+    }
+  };
+
+  const handleSlide2VolumeToggle = () => {
+    setMuted(prevMuted => !prevMuted);
+  };
+
+  const handleStartLearning = (movieId) => {
+    navigate(`/coursecontent/${movieId}`);
+  };
+
+  const handleMouseEnter = (index) => {
+    setPlayingSlide2Trailer(index);
+  };
+
+  const handleMouseLeave = () => {
+    setPlayingSlide2Trailer(null);
+  };
+
+  const determineCurrentSlide = () => {
+    const scrollPosition = window.scrollY;
+
+    if (scrollPosition < window.innerHeight) {
+      return 1;
+    } else if (scrollPosition < 2 * window.innerHeight) {
+      return 2;
+    } else {
+      return 3; // Adjust for additional slides
+    }
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentSlide = determineCurrentSlide();
+      setActiveSlide(currentSlide);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <div className='homepage'>
-
-    <div className='slide1'>
-        <div className='textt'>
-          <h1>Welcome To Streamify</h1>
-          <h2>Join Streamify To Watch Latest Movies</h2>
-          <button className='sign-in'>Sign In To Join Streamify</button>
-        </div>
-
-        <div className='banner'>
-          <img src={banner1} alt='Banner 1'/>
-        </div>
+      {/* Slide 1 */}
+      <div className='slide1'>
+      {activeSlide === 1 && <ParticlesComponent theme={isDarkMode ? 'dark' : 'light'} />}
+        <div className="greeting">WELCOME,</div>
+        <div className="staticc">Want to be a Great Developer?</div>
+        <div className="static">Learn </div><span>{text}</span>
       </div>
 
+      {/* Slide 2 */}
       <div className='slide2'>
-        <div className='textt2'>
-          <h1>Movie Rentals On Streamify</h1>
-          <h2>Early Access to new movies, before digital subscription</h2>
-          <button className='sign-in'>Rent Now</button>
-        </div>
-
-        <div className='banner2'>
-          <img src={banner2} alt='Banner 2'/>
-        </div>
+        <div className='headingg'>OUR BEST COURSES</div>
+        <Slider {...slide2Settings} style={{ width: '90%', margin: '0 auto' }}>
+          {slide2Movies.map((movie, index) => (
+            <div
+              key={index}
+              className="carousel-slide"
+              onMouseEnter={() => handleMouseEnter(index)}
+              onMouseLeave={handleMouseLeave}
+            >
+              <div className="carousel-content">
+                <div className="movie-container">
+                  <div className="movie-details">
+                    <h2>{movie.movieDetails.name}</h2>
+                    <p>{movie.movieDetails.ageRating}</p>
+                    <button onClick={() => handleStartLearning(movie.movieId)}>Start Learning</button>
+                  </div>
+                  <div className="movie-banner">
+                    {playingSlide2Trailer === index ? (
+                      <div className="video-overlay-container">
+                        <video
+                          ref={(el) => (slide2VideoRefs.current[index] = el)}
+                          src={movie.trailer}
+                          autoPlay
+                          muted={muted}
+                          className="video-content"
+                        />
+                        <div className="fade-bottom"></div>
+                        <div className="fade-left"></div>
+                        <button className='mute-btn' onClick={handleSlide2VolumeToggle}>
+                          {muted ? (
+                            <i className="fas fa-volume-mute"></i>
+                          ) : (
+                            <i className="fas fa-volume-up"></i>
+                          )}
+                        </button>
+                      </div>
+                    ) : (
+                      <img src={movie.banner} alt={movie.movieDetails.name} className="banner-content" />
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </Slider>
       </div>
 
+      {/* Slide 3 */}
       <div className='slide3'>
-        <div className="faq">Frequently Asked Questions</div>
-        <ul className="ques">
-          <li>
-            <input type="radio" name="ques" id="first"/>
-            <label htmlFor="first">What is Netflix?</label>
-            <div className="content">
-              <p>Netflix is a streaming service that offers a wide variety of award-winning TV shows, movies, anime, documentaries and more – on thousands of internet-connected devices. You can watch as much as you want, whenever you want, without a single ad – all for one low monthly price. There's always something new to discover, and new TV shows and movies are added every week!</p>
-            </div>
-          </li>
-
-          <li>
-            <input type="radio" name="ques" id="second"/>
-            <label htmlFor="second">How much does Netflix cost?</label>
-            <div className="content">
-              <p>Watch Netflix on your smartphone, tablet, Smart TV, laptop, or streaming device, all for one fixed monthly fee. Plans range from ₹ 649 to ₹ 149 a month. No extra costs, no contracts.</p>
-            </div>
-          </li>
-
-          <li>
-            <input type="radio" name="ques" id="third"/>
-            <label htmlFor="third">Where can I watch?</label>
-            <div className="content">
-              <p>Watch anywhere, anytime. Sign in with your Netflix account to watch instantly on the web at netflix.com from your personal computer or on any internet-connected device that offers the Netflix app, including smart TVs, smartphones, tablets, streaming media players and game consoles. You can also download your favourite shows with the iOS, Android, or Windows 10 app. Use downloads to watch while you're on the go and without an internet connection. Take Netflix with you anywhere.</p>
-            </div>
-          </li>
-
-          <li>
-            <input type="radio" name="ques" id="fourth"/>
-            <label htmlFor="fourth">How do I cancel?</label>
-            <div className="content">
-              <p>Netflix is flexible. There are no annoying contracts and no commitments. You can easily cancel your account online in two clicks. There are no cancellation fees – start or stop your account anytime.</p>
-            </div>
-          </li>
-
-          <li>
-            <input type="radio" name="ques" id="fifth"/>
-            <label htmlFor="fifth">What can I watch on Netflix?</label>
-            <div className="content">
-              <p>Netflix has an extensive library of feature films, documentaries, TV shows, anime, award-winning Netflix originals, and more. Watch as much as you want, anytime you want.</p>
-            </div>
-          </li>
-
-          <li>
-            <input type="radio" name="ques" id="sixth"/>
-            <label htmlFor="sixth">Is Netflix good for kids?</label>
-            <div className="content">
-              <p>The Netflix Kids experience is included in your membership to give parents control while kids enjoy family-friendly TV shows and films in their own space. Kids profiles come with PIN-protected parental controls that let you restrict the maturity rating of content kids can watch and block specific titles you don’t want kids to see.</p>
-            </div>
-          </li>
-        </ul>
+        <div className='headingg'>200+ TOPICS COVERED</div>
+        <h3>Begin your learning journey with us today!</h3>
+        <TopicsCarousel /> {/* For light mode */}
       </div>
 
+      {/* Slide 4 */}
+      <div className='slide4'>
+        <div className='headingg'>CORE OFFERINGS</div>
+        <CoreOfferings />
+      </div>
+
+      {/* Slide 5 */}
+      <div className='slide5'>
+        <div className='headingg'>TOP COMPANIES YOU CAN BE PLACED AT</div>
+        <ImageCarousel />
+      </div>
+
+      {/* Slide 6 */}
+      <div className='slide6'>
+        <div className='headingg'>Our Student Testimonials</div>
+        <StudentReviews />
+      </div>
     </div>
   );
 }

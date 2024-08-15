@@ -1,45 +1,50 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import logo from '../homepage/images/logo.webp';
-import search from '../homepage/images/search.png';
-
+import logo from '../homepage/images/logo.png';
 
 const Header = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [kebabMenuOpen, setKebabMenuOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
-  const handleMenuToggle = () => {
-    setMenuOpen(prev => !prev);
+  const handleKebabMenuToggle = () => {
+    setKebabMenuOpen(!kebabMenuOpen);
   };
+
+  const handleThemeToggle = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
+  useEffect(() => {
+    document.body.className = isDarkMode ? 'dark-mode' : 'light-mode';
+  }, [isDarkMode]);
 
   return (
     <div className="navbar">
-       <Link to="/"><li className="logo"><img src={logo} alt='Streamify Logo'/></li></Link>
-      <div className="menu-icon" onClick={handleMenuToggle}>
-        &#9776;
+      <div className="logo">
+        <Link to="/"><li className="logo"><img src={logo} alt="Logo" /></li></Link>
       </div>
-      <ul className={`menu ${menuOpen ? 'open' : ''}`}>
-       
-        <Link to="/movies"><li>Movies</li></Link>
-        <Link to="/rent"><li>Rent</li></Link>
-        
-        <li>
-          <div className="search-container">
-            <input type="text" placeholder="GPT Search"/>
-            <button className="searchbutton"><img src={search} alt="Search" width={"35px"} /></button>
-          </div>
-        </li>
-        <li>
-          <select>
-            <option value="english">English</option>
-            <option value="hindi">Hindi</option>
-          </select>
-        </li>
+     
+      <div className="otheroptions">
+        <Link to="/slide2"><li>Courses</li></Link>
         <Link to="/profile"><li>Profile</li></Link>
         <Link to="/login"><li>Login</li></Link>
-      </ul>
-      <div className={`menu-overlay ${menuOpen ? 'show' : ''}`} onClick={handleMenuToggle}></div>
+      </div>
+      
+      <div className="kebab-menu-container">
+        <div className="kebab-menu-icon" onClick={handleKebabMenuToggle}>
+          &#8942; {/* Kebab menu icon */}
+        </div>
+        <div className={`kebab-menu ${kebabMenuOpen ? 'show' : ''}`}>
+          <li onClick={handleThemeToggle}>
+            {isDarkMode ? 'Light Mode' : 'Switch to Dark Mode'}
+          </li>
+          <li>Policy</li>
+          <li>Review</li>
+        </div>
+      </div>
+      <div className={`menu-overlay ${kebabMenuOpen ? 'show' : ''}`} onClick={handleKebabMenuToggle}></div>
     </div>
   );
-}
+};
 
 export default Header;

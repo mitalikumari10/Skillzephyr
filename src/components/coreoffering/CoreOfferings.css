@@ -1,0 +1,61 @@
+/* CoreOfferings.css */
+.offerings-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 boxes per row */
+    gap: 20px;
+    padding: 20px;
+    height: 100vh; /* Full viewport height */
+    width:90%; /* Full viewport width */
+    box-sizing: border-box; /* Includes padding in the total width and height */
+    
+}
+
+.offering-box {
+    background-color: #2A323C;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    color: #fff; /* Adjusted text color for better visibility on dark background */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.offering-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.offering-title {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    color: #fff; /* Adjusted text color */
+}
+
+.offering-description {
+    font-size: 1em;
+    color: #ddd; /* Lighter color for description */
+    text-align: center; /* Center align the text */
+}
+
+/* Responsive Layout Adjustments */
+@media (max-width: 1200px) { /* Tablets and smaller laptops */
+    .offerings-container {
+        grid-template-columns: repeat(3, 1fr); /* 3 boxes per row */
+    }
+}
+
+@media (max-width: 900px) { /* Larger mobile devices */
+    .offerings-container {
+        grid-template-columns: repeat(2, 1fr); /* 2 boxes per row */
+    }
+}
+
+@media (max-width: 600px) { /* Mobile devices */
+    .offerings-container {
+        grid-template-columns: 1fr; /* 1 box per row */
+    }
+}

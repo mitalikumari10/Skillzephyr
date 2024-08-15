@@ -1,0 +1,236 @@
+
+.course-content {
+    display: flex;
+    justify-content: space-between;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    color: white;
+    margin: 0px 90px;
+}
+
+.course-details {
+    width: 60%;
+    color: white;
+}
+
+.course-name {
+    font-size: 2.0rem;
+    margin-bottom: 25px;
+    color: #BBB911;
+    font-weight:600;
+}
+
+.course-features {
+    list-style: none; /* Remove default list styling */
+    padding-left: 0; /* Remove padding */
+    margin-bottom: 25px;
+    line-height: 1.6;
+    color: #A6ADBA;
+    font-size: 20px;
+}
+
+.course-features li {
+    position: relative; /* Position for the checkmark */
+    padding-left: 30px; /* Space for the checkmark */
+    margin-bottom: 10px; /* Space between list items */
+}
+
+.course-features li::before {
+    content: '\2714'; /* Unicode checkmark character */
+    position: absolute;
+    left: 0;
+    color: #00a859; /* Color of the checkmark */
+    font-size: 20px; /* Size of the checkmark */
+}
+
+
+.course-info {
+    margin-bottom: 25px;
+}
+
+.course-price, .course-validity {
+    font-size: 1.3rem;
+    margin-bottom: 12px;
+    color:#A6ADBA;
+    font-weight: 700;
+    display: flex;
+}
+
+.enroll-button {
+    font-size: 1.1rem;
+    width: 400px;
+    color: #fff;
+    background-color:#10426E;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.enroll-button:hover {
+    background-color:#072a47;
+    transform: translateY(-2px);
+}
+
+.course-trailer {
+    width: 35%;
+}
+
+.course-trailer video {
+    width:600px;
+    margin-left: -200px;
+    margin-top: 40px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease;
+}
+
+.course-trailer video:hover {
+    transform: scale(1.02);
+}
+
+
+/*mission*/
+
+.second 
+{
+    margin: 100px 400px;
+   
+
+}
+.second h2
+{
+    color: #BBB911;
+    font-size: 2.5rem;
+}
+.second p
+{
+    font-size: 20px;
+    margin-top: 40px;
+    color:#A6ADBA; 
+}
+
+.third {
+    padding: 2rem;
+    margin: 50px 180px;
+}
+
+.third h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #BBB911; 
+    margin-bottom: 3rem;
+}
+
+.course-for-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid layout */
+    gap: 1rem; /* Space between the cards */
+    justify-content: center;
+}
+
+.course-for-card {
+    background: #2A323C; /* Dark background for the cards */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    padding: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.course-for-card p {
+    margin: 0;
+    font-size: 1rem;
+    color: #A6ADBA; /* Slightly lighter color for the text */
+    margin-top: 10px;
+}
+
+.course-for-card strong {
+    color: #BBB911; /* Emphasis color */
+    font-weight: bold; /* Bold text */
+    font-size: 20px;
+    display: block; /* Makes the <strong> act like a block element */
+    margin-bottom: 2rem; /* Space between <strong> and <p> */
+}
+
+.course-for-card:hover {
+    transform: translateY(-5px); /* Slight lift effect on hover */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+
+.forth {
+    padding: 2rem;
+    margin: 50px 100px;
+}
+
+.forth h2 {
+    text-align: center;
+    font-size: 2rem;
+    color: #BBB911; /* Consistent color with previous section */
+    margin-bottom: 3rem;
+}
+
+.perks-and-benefits-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid layout */
+    gap: 1rem; /* Space between the cards */
+    justify-content: center;
+}
+
+.perks-and-benefits-card {
+    background: #2A323C; /* Dark background for consistency */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    padding: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.perks-and-benefits-card p {
+    margin: 0;
+    font-size: 1rem;
+    color: #A6ADBA; /* Light color for text */
+}
+
+.perks-and-benefits-card:hover {
+    transform: translateY(-5px); /* Slight lift effect on hover */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+
+.fifth {
+    padding: 2rem;
+    margin: 50px 180px;
+}
+
+.fifth h2 {
+    text-align: center;
+    font-size: 2rem;
+    color: #BBB911;
+    margin-bottom: 5rem;
+}
+
+.learnings-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two equal-width columns */
+    gap: 1rem; /* Space between the items */
+    list-style: none; /* Remove default list styling */
+    padding: 0;
+    margin: 0;
+}
+
+.learning-item {
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem;
+    color: #A6ADBA; /* Text color */
+    padding-left: 1.5rem; /* Space for the checkmark */
+    position: relative;
+}
+
+.learning-item::before {
+    content: "✔";
+    color: #BBB911; /* Checkmark color */
+    font-size: 1.5rem;
+    position: absolute;
+    left: 0; /* Position checkmark to the left */
+}
+

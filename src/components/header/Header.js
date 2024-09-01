@@ -1,17 +1,37 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../Context';
 import logo from '../homepage/images/logo.png';
+import { toast } from 'react-toastify';
 
 const Header = () => {
+  const { isauthenticated, setisauthenticated } = useAuth();
   const [kebabMenuOpen, setKebabMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('jwtToken');
+    setisauthenticated(!!token);
+  }, [setisauthenticated]);
 
   const handleKebabMenuToggle = () => {
-    setKebabMenuOpen(!kebabMenuOpen);
+    setKebabMenuOpen(prevState => !prevState);
   };
 
   const handleThemeToggle = () => {
-    setIsDarkMode(!isDarkMode);
+    setIsDarkMode(prevState => !prevState);
+  };
+
+  const handleLogin = () => {
+    navigate('/login');
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('jwtToken');
+    setisauthenticated(false);
+    toast.success('Logged out!');
+    window.location.href = '/';
   };
 
   useEffect(() => {
@@ -27,7 +47,11 @@ const Header = () => {
       <div className="otheroptions">
         <Link to="/slide2"><li>Courses</li></Link>
         <Link to="/profile"><li>Profile</li></Link>
-        <Link to="/login"><li>Login</li></Link>
+        {isauthenticated ? (
+          <button onClick={handleLogout} style={{ cursor: "pointer" }}>Logout</button>
+        ) : (
+          <button onClick={handleLogin} style={{ cursor: "pointer" }}>Login</button>
+        )}
       </div>
       
       <div className="kebab-menu-container">
@@ -38,7 +62,7 @@ const Header = () => {
           <li onClick={handleThemeToggle}>
             {isDarkMode ? 'Light Mode' : 'Switch to Dark Mode'}
           </li>
-          <li>Policy</li>
+          <Link to="/policy"><li>Policy</li></Link>
           <li>Review</li>
         </div>
       </div>

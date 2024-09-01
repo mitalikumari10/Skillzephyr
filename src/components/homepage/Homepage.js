@@ -28,12 +28,12 @@ function Homepage() {
   const [muted, setMuted] = useState(true);
   const slide2VideoRefs = useRef([]);
   const navigate = useNavigate();
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isDarkMode] = useState(true);
 
   useEffect(() => {
     const fetchSlide2Movies = async () => {
       try {
-        const response = await axios.get('https://sgqwlraw02.execute-api.us-east-1.amazonaws.com/dev/items');
+        const response = await axios.get('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/items');
         setSlide2Movies(response.data);
       } catch (error) {
         console.error('Error fetching movie data:', error);
@@ -68,8 +68,8 @@ function Homepage() {
     setMuted(prevMuted => !prevMuted);
   };
 
-  const handleStartLearning = (movieId) => {
-    navigate(`/coursecontent/${movieId}`);
+  const handleStartLearning = (courseId) => {
+    navigate(`/coursecontent/${courseId}`);
   };
 
   const handleMouseEnter = (index) => {
@@ -126,9 +126,9 @@ function Homepage() {
               <div className="carousel-content">
                 <div className="movie-container">
                   <div className="movie-details">
-                    <h2>{movie.movieDetails.name}</h2>
-                    <p>{movie.movieDetails.ageRating}</p>
-                    <button onClick={() => handleStartLearning(movie.movieId)}>Start Learning</button>
+                    <h2>{movie.courseDetails.name}</h2>
+                    <p>{movie.courseDetails.ageRating}</p>
+                    <button onClick={() => handleStartLearning(movie.courseId)}>Start Learning</button>
                   </div>
                   <div className="movie-banner">
                     {playingSlide2Trailer === index ? (
@@ -151,7 +151,7 @@ function Homepage() {
                         </button>
                       </div>
                     ) : (
-                      <img src={movie.banner} alt={movie.movieDetails.name} className="banner-content" />
+                      <img src={movie.banner} alt={movie.courseDetails.name} className="banner-content" />
                     )}
                   </div>
                 </div>
@@ -185,6 +185,8 @@ function Homepage() {
         <div className='headingg'>Our Student Testimonials</div>
         <StudentReviews />
       </div>
+
+      <faq/>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './CourseContent.css';
 import ImageCarousel from '../companies/ImageCarousel';
@@ -7,17 +7,17 @@ import StudentReviews from '../reviews/StudentReviews';
 import FAQAccordion from '../faq/FAQAccordion';
 
 const CourseContent = () => {
-    const { courseId } = useParams();
+    const { cId } = useParams();
     const [courseData, setCourseData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
- 
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchCourseData = async () => {
             try {
-                const response = await axios.get('https://sgqwlraw02.execute-api.us-east-1.amazonaws.com/dev/items');
-                const selectedCourse = response.data.find(course => course.movieId === courseId);
+                const response = await axios.get('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/items');
+                const selectedCourse = response.data.find(course => course.courseId === cId);
                 if (selectedCourse) {
                     setCourseData(selectedCourse);
                 } else {
@@ -31,9 +31,27 @@ const CourseContent = () => {
         };
 
         fetchCourseData();
-    }, [courseId]);
+    }, [cId]);
 
-  
+    const handleEnrollClick = () => {
+        const token = localStorage.getItem('jwtToken');
+        if (!token) {
+            navigate('/login'); // Redirect to login if not authenticated
+        } else {
+            axios.post('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/validate', { token })
+                .then(response => {
+                    if (response.data.valid) {
+                        // Redirect to payment page with course details
+                        navigate(`/payment?courseId=${cId}`);
+                    } else {
+                        navigate('/login'); // Redirect to login if token is invalid
+                    }
+                })
+                .catch(() => {
+                    navigate('/login'); // Redirect to login on error
+                });
+        }
+    };
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
@@ -42,7 +60,7 @@ const CourseContent = () => {
         <div>
             <div className="course-content">
                 <div className="course-details">
-                    <h1 className="course-name">{courseData.movieDetails.name}</h1>
+                    <h1 className="course-name">{courseData.courseDetails.name}</h1>
                     <ul className="course-features">
                         {courseData.features.map((feature, index) => (
                             <li key={index}>{feature}</li>
@@ -51,7 +69,7 @@ const CourseContent = () => {
                     <div className="course-info">
                         <p className="course-price">Price: ${courseData.price}</p>
                         <p className="course-validity">{courseData.validity} validity</p>
-                        <button className="enroll-button">Enroll Now</button>
+                        <button className="enroll-button" onClick={handleEnrollClick}>Enroll Now</button>
                     </div>
                 </div>
                 <div className="course-trailer">
@@ -105,7 +123,11 @@ const CourseContent = () => {
                     </ul>
                 </div>
                 <FAQAccordion />
-                <ImageCarousel />
+                <div className='carousell'>
+        <div className='headinggg'>TOP COMPANIES YOU CAN BE PLACED AT</div>
+        <ImageCarousel />
+      </div>
+               
                 <StudentReviews />
             </div>
         </div>

@@ -8,6 +8,8 @@ body {
   z-index: 1;
 }
 
+
+
 /* Navbar Styles */
 .navbar {
   display: flex;
@@ -15,6 +17,7 @@ body {
   padding: 10px 20px;
   background-color: rgb(27, 27, 27);
   position: relative;
+  z-index: 10;
 }
 
 .navbar .logo {
@@ -29,6 +32,12 @@ body {
   display: flex;
   align-items: center;
   margin-left: auto;
+}
+.navbar .otheroptions button 
+{
+  cursor: pointer;
+  background-color:none;
+  background: none;
 }
 
 .navbar li {
@@ -193,6 +202,16 @@ body {
   flex-direction: column;
   justify-content: center;
 }
+.movie-details button
+{
+  background-color:#0c456b ;
+}
+.movie-details button:hover
+{
+  background-color:#0B3860;
+}
+
+
 
 .movie-banner {
   width: 70%;

@@ -17,17 +17,17 @@
 }
 
 .carousel-item {
-    min-width: 170px; /* Adjusted for better visibility on larger screens */
-    height: 40px; /* Adjusted for better visibility on larger screens */
-    margin: 0 10px; /* Increased margin for better spacing */
+    min-width: 150px; /* Adjusted for better visibility on larger screens */
+    height: 30px; /* Adjusted for better visibility on larger screens */
+    margin: 5px 10px; /* Increased margin for better spacing */
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #007bff; /* Dark theme background color */
+    background-color:#2A323C; /* Dark theme background color */
     color: #fff; /* Dark theme text color */
     border-radius: 5px;
-    padding: 10px; /* Increased padding for better spacing */
-    font-size: 1em; /* Responsive font size */
+    padding:4px; /* Increased padding for better spacing */
+    font-size: 0.8rem; /* Responsive font size */
 }
 
 /* Light Theme */
@@ -37,8 +37,19 @@ body.light-mode .carousel-container {
   }
 
 .carousel-container.light-mode .carousel-item {
-    background-color: #007bff; /* Background color remains the same for visibility */
+    background-color:#2A323C; /* Background color remains the same for visibility */
     color: black; /* Light theme text color */
+}
+
+.light-mode .carousel-wrapper::before,
+.light-mode .carousel-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 10%;
+    background:none;
+    z-index: 1;
 }
 
 /* Adjust animation duration based on screen size */
@@ -61,13 +72,12 @@ body.light-mode .carousel-container {
         padding: 8px;
     }
 }
-
 .left-to-right {
-    animation: scrollLeftToRight 20s linear infinite;
+    animation: scrollLeftToRight 30s linear infinite;
 }
 
 .right-to-left {
-    animation: scrollRightToLeft 20s linear infinite;
+    animation: scrollRightToLeft 30s linear infinite;
 }
 
 @keyframes scrollLeftToRight {
@@ -75,15 +85,41 @@ body.light-mode .carousel-container {
         transform: translateX(-100%);
     }
     100% {
-        transform: translateX(100%);
+        transform: translateX(0%);
     }
 }
 
 @keyframes scrollRightToLeft {
     0% {
-        transform: translateX(100%);
+        transform: translateX(0%);
     }
     100% {
         transform: translateX(-100%);
     }
 }
+
+.carousel-wrapper {
+    margin: 0px 100px; /* 90% max width as requested */
+    overflow: hidden; /* Hide overflow to create blurred borders effect */
+    position: relative;
+}
+
+
+/* Blurred Edges */
+.carousel-wrapper::before,
+.carousel-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 10%;
+    background: linear-gradient(to right,#1B1B1B, transparent);
+    z-index: 1;
+}
+
+.carousel-wrapper::after {
+    right: 0;
+    background: linear-gradient(to left, #1B1B1B, transparent);
+    z-index: 1;
+}
+

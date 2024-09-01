@@ -7,23 +7,13 @@ const Footer = () => {
       <div className="footer-container">
         {/* About Us */}
         <div className="footer-about">
-          <h3>Streamify</h3>
+          <h3>Skillzephyr</h3>
           <p>
-            Embark on a culinary adventure with Swaad Safari. Discover the essence of Indian flavors, where tradition meets taste, and every dish is a celebration of culture.
+          Embark on a journey of knowledge with SkillZephyr. Discover the essence of learning, where innovation meets education, and every lesson is a celebration of growth.
           </p>
         </div>
 
-        {/* Quick Links */}
-        <div className="footer-links">
-          <h3>Quick Links</h3>
-          <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/search">Menu</a></li>
-            <li><a href="/about">About Us</a></li>
-            <li><a href="/contact">Contact</a></li>
-            <li><a href="/admin-panel">Admin Panel</a></li>
-          </ul>
-        </div>
+      
 
         {/* Contact Information */}
         <div className="footer-contact">

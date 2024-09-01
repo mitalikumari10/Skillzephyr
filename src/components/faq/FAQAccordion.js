@@ -9,7 +9,7 @@ const FAQAccordion = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const response = await axios.get('https://sgqwlraw02.execute-api.us-east-1.amazonaws.com/dev/items');
+                const response = await axios.get('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/items');
                 setCourses(response.data);
                 console.log('Courses Data:', response.data);
             } catch (error) {
@@ -43,13 +43,13 @@ const FAQAccordion = () => {
                         className={`course-button ${selectedCourseIndex === courseIndex ? 'active' : ''}`}
                         onClick={() => handleCourseSelection(courseIndex)}
                     >
-                        {course.movieDetails.name}
+                        {course.courseDetails.name}
                     </button>
                 ))}
             </div>
             {courses[selectedCourseIndex] && (
                 <div className="course-faq">
-                    <h3>{courses[selectedCourseIndex].movieDetails.name}</h3>
+                    <h3>{courses[selectedCourseIndex].courseDetails.name}</h3>
                     <ul className="faq-list">
                         {courses[selectedCourseIndex].FAQ.map((faq, faqIndex) => (
                             <li key={faqIndex} className="faq-item">

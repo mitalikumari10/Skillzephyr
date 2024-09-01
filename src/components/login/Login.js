@@ -1,47 +1,65 @@
 import React, { useState } from 'react';
-// import { Auth } from 'aws-amplify';
+import axios from 'axios';
 import './Login.css';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../Context';
 
 const Login = () => {
+  const navigate = useNavigate();
+  const { setisauthenticated } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [confirmationCode, setConfirmationCode] = useState('');
+  const [error, setError] = useState(null);
 
-//   const handleLogin = async () => {
-//     try {
-//       await Auth.signIn(username, password);
-//       // Redirect to home page
-//     } catch (error) {
-//       console.error('Error logging in', error);
-//     }
-//   };
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/login', {
+        username,
+        password
+      });
+      localStorage.setItem('jwtToken', response.data.token);
+      setisauthenticated(true);
+      toast.success('Logged in!');
+      navigate('/');
+    } catch (err) {
+      setError('Error logging in: ' + (err.response?.data?.message || err.message));
+      toast.error('Error logging in!');
+    }
+  };
 
-//   const handleRegister = async () => {
-//     try {
-//       await Auth.signUp({
-//         username,
-//         password,
-//         attributes: {
-//           email
-//         }
-//       });
-//       // Switch to verification step
-//       setIsLogin(false);
-//     } catch (error) {
-//       console.error('Error registering', error);
-//     }
-//   };
+  const handleRegister = async () => {
+    try {
+      await axios.post('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/register', {
+        username,
+        password,
+        email
+      });
+      setIsLogin(false);
+      toast.success('Registration successful!');
+    } catch (err) {
+      setError('Error registering: ' + (err.response?.data?.message || err.message));
+      toast.error('Error registering!');
+    }
+  };
 
-//   const handleConfirm = async () => {
-//     try {
-//       await Auth.confirmSignUp(username, confirmationCode);
-//       // Redirect to login page or automatically log in the user
-//     } catch (error) {
-//       console.error('Error confirming sign up', error);
-//     }
-//   };
+  const handleConfirm = async () => {
+    try {
+      await axios.post('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/validate', {
+        username,
+        confirmationCode
+      });
+      setIsLogin(true);
+      setError(null);
+      toast.success('Registration confirmed! Please log in.');
+    } catch (err) {
+      setError('Error confirming registration: ' + (err.response?.data?.message || err.message));
+      toast.error('Error confirming registration!');
+    }
+  };
 
   return (
     <div className="login-container">
@@ -61,7 +79,7 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
             />
-            <button >Login</button>
+            <button onClick={handleLogin}>Login</button>
             <p>
               Don't have an account?{' '}
               <button onClick={() => setIsLogin(false)}>Register</button>
@@ -88,7 +106,7 @@ const Login = () => {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Email"
             />
-            <button >Register</button>
+            <button onClick={handleRegister}>Register</button>
             <p>
               Already have an account?{' '}
               <button onClick={() => setIsLogin(true)}>Login</button>
@@ -104,9 +122,10 @@ const Login = () => {
               onChange={(e) => setConfirmationCode(e.target.value)}
               placeholder="Confirmation Code"
             />
-            <button>Confirm</button>
+            <button onClick={handleConfirm}>Confirm</button>
           </>
         )}
+        {error && <p className="error-message">{error}</p>}
       </div>
     </div>
   );

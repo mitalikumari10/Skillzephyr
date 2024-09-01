@@ -1,0 +1,48 @@
+/* Light Theme */
+.terms-container.light {
+    background-color: #ffffff;
+    color: #333333;
+  }
+  
+  .terms-container.light .question-title {
+    background-color: #f9f9f9;
+    border: 1px solid #dddddd;
+  }
+  
+  .terms-container.light .question-content {
+    background-color: #ffffff;
+    border: 1px solid #dddddd;
+  }
+  
+  /* Dark Theme */
+  .terms-container.dark {
+    background-color: #333333;
+    color: #ffffff;
+  }
+  
+  .terms-container.dark .question-title {
+    background-color: #444444;
+    border: 1px solid #555555;
+  }
+  
+  .terms-container.dark .question-content {
+    background-color: #444444;
+    border: 1px solid #555555;
+  }
+  
+  .theme-toggle {
+    margin: 20px 0;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: #ffffff;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .theme-toggle:hover {
+    background-color: #45a049;
+  }
+  

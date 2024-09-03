@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [courses, setCourses] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -26,6 +28,14 @@ const Profile = () => {
     }
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('jwtToken');
+    setUser(null);
+    setCourses([]);
+    navigate('/login'); // Redirect to the login page after logout
+  };
+
   return (
     <div>
       {user ? (
@@ -38,6 +48,7 @@ const Profile = () => {
               <li key={course.courseId}>{course.courseName}</li>
             ))}
           </ul>
+          <button onClick={handleLogout}>Logout</button> {/* Add the logout button */}
         </div>
       ) : (
         <p>Loading...</p>

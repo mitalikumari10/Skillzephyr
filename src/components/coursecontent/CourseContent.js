@@ -23,9 +23,9 @@ const CourseContent = () => {
                 } else {
                     setError('Course not found');
                 }
-                setLoading(false);
             } catch (err) {
                 setError('Error fetching course data');
+            } finally {
                 setLoading(false);
             }
         };
@@ -33,23 +33,58 @@ const CourseContent = () => {
         fetchCourseData();
     }, [cId]);
 
-    const handleEnrollClick = () => {
+    const handleEnroll = async () => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user) {
+            navigate('/login');
+            return;
+        }
+
         const token = localStorage.getItem('jwtToken');
-        if (!token) {
-            navigate('/login'); // Redirect to login if not authenticated
-        } else {
-            axios.post('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/validate', { token })
-                .then(response => {
-                    if (response.data.valid) {
-                        // Redirect to payment page with course details
-                        navigate(`/payment?courseId=${cId}`);
-                    } else {
-                        navigate('/login'); // Redirect to login if token is invalid
-                    }
-                })
-                .catch(() => {
-                    navigate('/login'); // Redirect to login on error
-                });
+
+        try {
+            const orderResponse = await axios.post('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/create-payment-order', {
+                amount: courseData.price,
+                currency: 'INR',
+                receipt: `${user.username}_${cId}`
+            }, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            const options = {
+                key: 'rzp_test_v2477Ctg5BxIwp', // Replace with your Razorpay key
+                amount: courseData.price * 100, // Razorpay amount is in paise
+                currency: 'INR',
+                name: courseData.courseDetails.name,
+                description: 'Course Enrollment',
+                image: courseData.trailer,
+                order_id: orderResponse.data.orderId,
+                handler: async function (response) {
+                    await axios.post('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/verify-payment', {
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_signature: response.razorpay_signature,
+                        courseId: cId,
+                        username: user.username
+                    }, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+
+                    navigate(`/profile`);
+                },
+                prefill: {
+                    name: user.username,
+                    email: user.email,
+                },
+                theme: {
+                    color: '#3399cc'
+                }
+            };
+
+            const paymentObject = new window.Razorpay(options);
+            paymentObject.open();
+        } catch (error) {
+            console.error('Error during payment:', error);
         }
     };
 
@@ -69,7 +104,7 @@ const CourseContent = () => {
                     <div className="course-info">
                         <p className="course-price">Price: ${courseData.price}</p>
                         <p className="course-validity">{courseData.validity} validity</p>
-                        <button className="enroll-button" onClick={handleEnrollClick}>Enroll Now</button>
+                        <button className="enroll-button" onClick={handleEnroll}>Enroll Now</button>
                     </div>
                 </div>
                 <div className="course-trailer">
@@ -79,6 +114,7 @@ const CourseContent = () => {
                     </video>
                 </div>
             </div>
+
             <div className='otherstuff'>
                 <div className='second'>
                     <h2>Mission</h2>
@@ -124,11 +160,14 @@ const CourseContent = () => {
                 </div>
                 <FAQAccordion />
                 <div className='carousell'>
-        <div className='headinggg'>TOP COMPANIES YOU CAN BE PLACED AT</div>
-        <ImageCarousel />
-      </div>
-               
-                <StudentReviews />
+                    <div className='headinggg'>TOP COMPANIES YOU CAN BE PLACED AT</div>
+                    <ImageCarousel />
+                </div>
+
+                <div className='reviews'>
+                    <div className='headinggg'>Our Student Testimonials</div>
+                    <StudentReviews />
+                </div>
             </div>
         </div>
     );

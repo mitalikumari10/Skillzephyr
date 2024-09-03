@@ -29,6 +29,7 @@ const Header = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('jwtToken');
+    localStorage.removeItem('user');
     setisauthenticated(false);
     toast.success('Logged out!');
     window.location.href = '/';

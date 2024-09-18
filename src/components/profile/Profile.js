@@ -2,45 +2,87 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const Profile = () => {
-  const [user, setUser] = useState(null);
-  const [courses, setCourses] = useState([]);
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem('user'));
-    setUser(storedUser);
+    const fetchUserData = async () => {
+      console.log('Local Storage on fetch:', localStorage);
 
-    const fetchCourses = async () => {
+      // Retrieve and parse user data
+      const userDataStr = localStorage.getItem('user');
+      const token = localStorage.getItem('jwtToken'); // Updated key
+
+      console.log('User data from local storage:', userDataStr);
+      console.log('Token from local storage:', token);
+
+      if (!userDataStr || !token) {
+        setError('User not logged in.');
+        setLoading(false);
+        return;
+      }
+
       try {
-        const token = localStorage.getItem('jwtToken');
-        const response = await axios.get('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/items', {
-          headers: { 'Authorization': `Bearer ${token}` }
+        // Parse user data
+        const { username } = JSON.parse(userDataStr);
+
+        // Fetch user data from backend
+        const response = await axios.get('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/profile', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+          params: {
+            username,
+          },
         });
-        setCourses(response.data);
-      } catch (error) {
-        console.error('Error fetching courses', error);
+
+        if (response.status === 200) {
+          setUserData(response.data);
+        } else {
+          setError('Error fetching user data.');
+        }
+      } catch (err) {
+        setError(`Error fetching user data: ${err.message}`);
+      } finally {
+        setLoading(false);
       }
     };
 
-    if (storedUser) {
-      fetchCourses();
-    }
+    fetchUserData();
   }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  if (!userData) {
+    return <div>No user data available.</div>;
+  }
+
+  const { username, email, coursesPurchased } = userData;
 
   return (
     <div>
-      {user ? (
-        <div>
-          <h2>{user.username}'s Profile</h2>
-          <p>Email: {user.email}</p>
-          <h3>Enrolled Courses</h3>
-          <ul>
-            {courses.map(course => (
-              <li key={course.courseId}>{course.courseName}</li>
-            ))}
-          </ul>
-        </div>
+      <h2>Profile</h2>
+      <p><strong>Username:</strong> {username}</p>
+      <p><strong>Email:</strong> {email || 'No email provided'}</p>
+     
+      {coursesPurchased && coursesPurchased.length > 0 ? (
+        <ul>
+          {coursesPurchased.map((course, index) => (
+            <li key={index}>
+              <p><strong>Course Name:</strong> {course.courseName}</p>
+              <p><strong>Course ID:</strong> {course.courseId}</p>
+            </li>
+          ))}
+        </ul>
       ) : (
-        <p>Loading...</p>
+        <p>No courses purchased yet.</p>
       )}
     </div>
   );

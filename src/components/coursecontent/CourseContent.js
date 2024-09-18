@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom'; 
 import axios from 'axios';
 import './CourseContent.css';
 import ImageCarousel from '../companies/ImageCarousel';
@@ -7,19 +7,26 @@ import StudentReviews from '../reviews/StudentReviews';
 import FAQAccordion from '../faq/FAQAccordion';
 
 const CourseContent = () => {
-    const { cId } = useParams();
+    const { cId } = useParams(); 
     const [courseData, setCourseData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const navigate = useNavigate();
+    const [isPurchased, setIsPurchased] = useState(false); // Track if the course is purchased
+    
+    const navigate = useNavigate(); 
+
+    // Fetch user info from localStorage
+    const user = JSON.parse(localStorage.getItem('user')) || null;
 
     useEffect(() => {
+        // Function to fetch course details
         const fetchCourseData = async () => {
             try {
-                const response = await axios.get('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/items');
+                const response = await axios.get('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/course');
                 const selectedCourse = response.data.find(course => course.courseId === cId);
                 if (selectedCourse) {
                     setCourseData(selectedCourse);
+                    checkIfPurchased(selectedCourse); // Pass selected course to checkIfPurchased
                 } else {
                     setError('Course not found');
                 }
@@ -30,47 +37,85 @@ const CourseContent = () => {
             }
         };
 
+        const checkIfPurchased = async (selectedCourse) => {
+            if (!user) return;
+        
+            try {
+                const purchaseResponse = await axios.post('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/check-course-purchase', {
+                    username: user.username,
+                    courseId: cId
+                });
+
+                const purchased = purchaseResponse.data.isPurchased;
+                setIsPurchased(purchased);
+
+                if (purchased) {
+                    console.log(`Course ID ${cId} from params is the same as course ID in the database. User has purchased the course.`);
+                } else {
+                    console.log(`Course ID ${cId} from params is not found in the user's purchased courses.`);
+                }
+            } catch (err) {
+                console.error('Error checking purchase status:', err);
+            }
+        };
+
         fetchCourseData();
-    }, [cId]);
+    }, [cId, user]);
 
     const handleEnroll = async () => {
-        const user = JSON.parse(localStorage.getItem('user'));
         if (!user) {
             navigate('/login');
             return;
         }
-
-        const token = localStorage.getItem('jwtToken');
-
+    
         try {
+            // Step 1: Create an order on your backend
             const orderResponse = await axios.post('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/create-payment-order', {
                 amount: courseData.price,
                 currency: 'INR',
                 receipt: `${user.username}_${cId}`
-            }, {
-                headers: { 'Authorization': `Bearer ${token}` }
             });
-
+    
             const options = {
-                key: 'rzp_test_v2477Ctg5BxIwp', // Replace with your Razorpay key
-                amount: courseData.price * 100, // Razorpay amount is in paise
+                key: 'rzp_test_v2477Ctg5BxIwp',
+                amount: courseData.price * 100,
                 currency: 'INR',
                 name: courseData.courseDetails.name,
                 description: 'Course Enrollment',
                 image: courseData.trailer,
                 order_id: orderResponse.data.orderId,
                 handler: async function (response) {
-                    await axios.post('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/verify-payment', {
-                        razorpay_order_id: response.razorpay_order_id,
-                        razorpay_payment_id: response.razorpay_payment_id,
-                        razorpay_signature: response.razorpay_signature,
-                        courseId: cId,
-                        username: user.username
-                    }, {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-
-                    navigate(`/profile`);
+                    try {
+                        // Step 4: Handle the successful payment and verify it with your backend
+                        const verificationData = {
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature,
+                            courseId: cId,
+                            courseName: courseData.courseDetails.name,
+                            username: user.username
+                        };
+    
+                        const result = await axios.post('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/verify-payment', verificationData);
+    
+                        if (result.status === 200) {
+                            alert('Payment verified successfully!');
+    
+                            // Update user data in localStorage (optional)
+                            const updatedUser = {
+                                ...user,
+                                coursesPurchased: [...(user.coursesPurchased || []), { courseId: cId, courseName: courseData.courseDetails.name }]
+                            };
+                            localStorage.setItem('user', JSON.stringify(updatedUser));
+    
+                            setIsPurchased(true); // Mark course as purchased
+                        } else {
+                            alert('Payment verification failed!');
+                        }
+                    } catch (error) {
+                        console.error('Payment verification error:', error);
+                        alert('Failed to verify payment.');
+                    }
                 },
                 prefill: {
                     name: user.username,
@@ -80,7 +125,7 @@ const CourseContent = () => {
                     color: '#3399cc'
                 }
             };
-
+    
             const paymentObject = new window.Razorpay(options);
             paymentObject.open();
         } catch (error) {
@@ -102,9 +147,11 @@ const CourseContent = () => {
                         ))}
                     </ul>
                     <div className="course-info">
-                        <p className="course-price">Price: ${courseData.price}</p>
+                        <p className="course-price">Price: ₹{courseData.price}</p>
                         <p className="course-validity">{courseData.validity} validity</p>
-                        <button className="enroll-button" onClick={handleEnroll}>Enroll Now</button>
+                        <button className="enroll-button" onClick={handleEnroll}>
+                            {isPurchased ? 'Launch' : 'Enroll Now'}
+                        </button>
                     </div>
                 </div>
                 <div className="course-trailer">
@@ -158,7 +205,9 @@ const CourseContent = () => {
                         ))}
                     </ul>
                 </div>
+
                 <FAQAccordion />
+                
                 <div className='carousell'>
                     <div className='headinggg'>TOP COMPANIES YOU CAN BE PLACED AT</div>
                     <ImageCarousel />

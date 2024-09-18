@@ -9,7 +9,7 @@ const FAQAccordion = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const response = await axios.get('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/items');
+                const response = await axios.get('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/course');
                 setCourses(response.data);
                 console.log('Courses Data:', response.data);
             } catch (error) {
@@ -35,7 +35,7 @@ const FAQAccordion = () => {
 
     return (
         <div className="faq-container">
-            <h2 className="faq">Frequently Asked Questions</h2>
+            <h2 className="Faq">Frequently Asked Questions</h2>
             <div className="course-selector">
                 {courses.map((course, courseIndex) => (
                     <button

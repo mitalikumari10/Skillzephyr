@@ -8,42 +8,42 @@ const Profile = () => {
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const token = localStorage.getItem('jwtToken');
-        const response = await axios.get('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/user/profile', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     try {
+  //       const token = localStorage.getItem('jwtToken');
+  //       const response = await axios.get('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/user/profile', {
+  //         headers: { Authorization: `Bearer ${token}` }
+  //       });
 
-        const userData = response.data;
-        setUser({
-          username: userData.username,
-          email: userData.email
-        });
+  //       const userData = response.data;
+  //       setUser({
+  //         username: userData.username,
+  //         email: userData.email
+  //       });
 
-        const courseIds = userData.coursesPurchased.map(course => course.courseId);
-        fetchCourses(courseIds);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
+  //       const courseIds = userData.coursesPurchased.map(course => course.courseId);
+  //       fetchCourses(courseIds);
+  //     } catch (error) {
+  //       console.error('Error fetching user data:', error);
+  //     }
+  //   };
 
-    const fetchCourses = async (courseIds) => {
-      try {
-        const coursesPromises = courseIds.map(courseId =>
-          axios.get(`https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/items/${courseId}`)
-        );
-        const coursesResponses = await Promise.all(coursesPromises);
-        const coursesData = coursesResponses.map(response => response.data);
-        setEnrolledCourses(coursesData);
-      } catch (error) {
-        console.error('Error fetching courses:', error);
-      }
-    };
+  //   const fetchCourses = async (courseIds) => {
+  //     try {
+  //       const coursesPromises = courseIds.map(courseId =>
+  //         axios.get(`https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/items/${courseId}`)
+  //       );
+  //       const coursesResponses = await Promise.all(coursesPromises);
+  //       const coursesData = coursesResponses.map(response => response.data);
+  //       setEnrolledCourses(coursesData);
+  //     } catch (error) {
+  //       console.error('Error fetching courses:', error);
+  //     }
+  //   };
 
-    fetchUserData();
-  }, []);
+  //   fetchUserData();
+  // }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('user');

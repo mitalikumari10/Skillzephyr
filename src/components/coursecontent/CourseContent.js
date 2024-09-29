@@ -1,81 +1,73 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; 
+import React, { useState, useEffect, useContext } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './CourseContent.css';
 import ImageCarousel from '../companies/ImageCarousel';
 import StudentReviews from '../reviews/StudentReviews';
 import FAQAccordion from '../faq/FAQAccordion';
+import { Context } from '../..';
 
 const CourseContent = () => {
-    const { cId } = useParams(); 
+    const { cId } = useParams();
     const [courseData, setCourseData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [isPurchased, setIsPurchased] = useState(false); // Track if the course is purchased
-    
-    const navigate = useNavigate(); 
-
-    // Fetch user info from localStorage
-    const user = JSON.parse(localStorage.getItem('user')) || null;
+    const [buttonText, setButtonText] = useState('Enroll Now');
+    const [presignedUrl, setPresignedUrl] = useState(null);
+    const { isauthenticated, user } = useContext(Context);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        // Function to fetch course details
         const fetchCourseData = async () => {
             try {
-                const response = await axios.get('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/course');
-                const selectedCourse = response.data.find(course => course.courseId === cId);
-                if (selectedCourse) {
-                    setCourseData(selectedCourse);
-                    checkIfPurchased(selectedCourse); // Pass selected course to checkIfPurchased
+                const response = await axios.post(
+                    'https://27977u1eql.execute-api.us-east-1.amazonaws.com/dev/course',
+                    { courseId: cId },
+                    {
+                        headers: { 'Content-Type': 'application/json' },
+                        withCredentials: true
+                    }
+                );
+
+                const data = response.data;
+                setCourseData(data);
+
+                // Update button and presigned URL if the course is still valid
+                if (data.presignedUrl) {
+                    setButtonText('Launch');
+                    setPresignedUrl(data.presignedUrl);
                 } else {
-                    setError('Course not found');
+                    setButtonText('Enroll Now');
                 }
             } catch (err) {
-                setError('Error fetching course data');
+                console.error('Error fetching course data:', err);
+                setError('Failed to load course data. Please try again.');
             } finally {
                 setLoading(false);
             }
         };
 
-        const checkIfPurchased = async (selectedCourse) => {
-            if (!user) return;
-        
-            try {
-                const purchaseResponse = await axios.post('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/check-course-purchase', {
-                    username: user.username,
-                    courseId: cId
-                });
-
-                const purchased = purchaseResponse.data.isPurchased;
-                setIsPurchased(purchased);
-
-                if (purchased) {
-                    console.log(`Course ID ${cId} from params is the same as course ID in the database. User has purchased the course.`);
-                } else {
-                    console.log(`Course ID ${cId} from params is not found in the user's purchased courses.`);
-                }
-            } catch (err) {
-                console.error('Error checking purchase status:', err);
-            }
-        };
-
         fetchCourseData();
-    }, [cId, user]);
+    }, [cId]);
 
-    const handleEnroll = async () => {
-        if (!user) {
+    const handlePayment = async () => {
+        if (!isauthenticated) {
+            alert('You need to be logged in to enroll in this course.');
             navigate('/login');
             return;
         }
-    
+
         try {
-            // Step 1: Create an order on your backend
-            const orderResponse = await axios.post('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/create-payment-order', {
-                amount: courseData.price,
-                currency: 'INR',
-                receipt: `${user.username}_${cId}`
-            });
-    
+            const orderResponse = await axios.post(
+                'https://27977u1eql.execute-api.us-east-1.amazonaws.com/dev/create-payment-order',
+                {
+                    amount: courseData.price * 100,
+                    currency: 'INR',
+                    receipt: `${user.username}_${cId}`
+                },
+                { withCredentials: true }
+            );
+
             const options = {
                 key: 'rzp_test_v2477Ctg5BxIwp',
                 amount: courseData.price * 100,
@@ -86,29 +78,23 @@ const CourseContent = () => {
                 order_id: orderResponse.data.orderId,
                 handler: async function (response) {
                     try {
-                        // Step 4: Handle the successful payment and verify it with your backend
                         const verificationData = {
                             razorpay_order_id: response.razorpay_order_id,
                             razorpay_payment_id: response.razorpay_payment_id,
                             razorpay_signature: response.razorpay_signature,
                             courseId: cId,
-                            courseName: courseData.courseDetails.name,
-                            username: user.username
                         };
-    
-                        const result = await axios.post('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/verify-payment', verificationData);
-    
-                        if (result.status === 200) {
+
+                        const verifyResponse = await axios.post(
+                            'https://27977u1eql.execute-api.us-east-1.amazonaws.com/dev/verify-payment',
+                            verificationData,
+                            { withCredentials: true }
+                        );
+
+                        if (verifyResponse.status === 200) {
                             alert('Payment verified successfully!');
-    
-                            // Update user data in localStorage (optional)
-                            const updatedUser = {
-                                ...user,
-                                coursesPurchased: [...(user.coursesPurchased || []), { courseId: cId, courseName: courseData.courseDetails.name }]
-                            };
-                            localStorage.setItem('user', JSON.stringify(updatedUser));
-    
-                            setIsPurchased(true); // Mark course as purchased
+                            setPresignedUrl(verifyResponse.data.presignedUrl);
+                            setButtonText('Launch');
                         } else {
                             alert('Payment verification failed!');
                         }
@@ -119,17 +105,31 @@ const CourseContent = () => {
                 },
                 prefill: {
                     name: user.username,
-                    email: user.email,
+                    email: user.email
                 },
                 theme: {
                     color: '#3399cc'
                 }
             };
-    
+
             const paymentObject = new window.Razorpay(options);
             paymentObject.open();
         } catch (error) {
             console.error('Error during payment:', error);
+            alert('Error initiating payment. Please try again.');
+        }
+    };
+
+    const handleButtonClick = () => {
+        if (buttonText === 'Launch' && presignedUrl) {
+            if (!isauthenticated) {
+                alert('You need to log in to access the course.');
+                navigate('/login');
+            } else {
+                window.open(presignedUrl, '_blank');
+            }
+        } else if (buttonText === 'Enroll Now') {
+            handlePayment();
         }
     };
 
@@ -148,9 +148,11 @@ const CourseContent = () => {
                     </ul>
                     <div className="course-info">
                         <p className="course-price">Price: ₹{courseData.price}</p>
-                        <p className="course-validity">{courseData.validity} validity</p>
-                        <button className="enroll-button" onClick={handleEnroll}>
-                            {isPurchased ? 'Launch' : 'Enroll Now'}
+                        <p className="course-validity">
+                            Valid until: {new Date(courseData.validity).toLocaleDateString()}
+                        </p>
+                        <button onClick={handleButtonClick}>
+                            {buttonText}
                         </button>
                     </div>
                 </div>
@@ -207,7 +209,7 @@ const CourseContent = () => {
                 </div>
 
                 <FAQAccordion />
-                
+
                 <div className='carousell'>
                     <div className='headinggg'>TOP COMPANIES YOU CAN BE PLACED AT</div>
                     <ImageCarousel />

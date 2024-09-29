@@ -8,7 +8,7 @@ const ParticlesComponent = ({ theme }) => {
   }, []);
 
   const particlesLoaded = useCallback(async (container) => {
-    console.log(container);
+    // console.log(container);
   }, []);
 
   // Define particle color based on theme

@@ -1,19 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../Context';
+import axios from 'axios';
 import logo from '../homepage/images/logo.png';
 import { toast } from 'react-toastify';
+import { Context } from '../..';
 
 const Header = () => {
-  const { isauthenticated, setisauthenticated } = useAuth();
+  const { isauthenticated , setIsauthenticated, setUser } = useContext(Context);
   const [kebabMenuOpen, setKebabMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const token = localStorage.getItem('jwtToken');
-    setisauthenticated(!!token);
-  }, [setisauthenticated]);
 
   const handleKebabMenuToggle = () => {
     setKebabMenuOpen(prevState => !prevState);
@@ -27,12 +23,26 @@ const Header = () => {
     navigate('/login');
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('jwtToken');
-    localStorage.removeItem('user');
-    setisauthenticated(false);
-    toast.success('Logged out!');
-    window.location.href = '/';
+  const handleLogout = async () => {
+    try {
+      const response = await axios.post(
+        'https://27977u1eql.execute-api.us-east-1.amazonaws.com/dev/logout',
+        {},
+        { withCredentials: true } // Allow sending cookies
+      );
+
+      if (response.status === 200) {
+        setIsauthenticated(false);
+        setUser({});
+        toast.success('Logout successful');
+        navigate("/");
+      } else {
+        toast.error('Failed to log out');
+      }
+    } catch (error) {
+      console.error('Error logging out:', error.response ? error.response.data : error);
+      toast.error('Failed to log out');
+    }
   };
 
   useEffect(() => {
@@ -44,7 +54,7 @@ const Header = () => {
       <div className="logo">
         <Link to="/"><li className="logo"><img src={logo} alt="Logo" /></li></Link>
       </div>
-     
+
       <div className="otheroptions">
         <Link to="/slide2"><li>Courses</li></Link>
         <Link to="/profile"><li>Profile</li></Link>
@@ -54,7 +64,7 @@ const Header = () => {
           <button onClick={handleLogin} style={{ cursor: "pointer" }}>Login</button>
         )}
       </div>
-      
+
       <div className="kebab-menu-container">
         <div className="kebab-menu-icon" onClick={handleKebabMenuToggle}>
           &#8942; {/* Kebab menu icon */}

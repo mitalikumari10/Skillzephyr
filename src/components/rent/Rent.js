@@ -11,30 +11,30 @@ const Movies = () => {
   const videoRefs = useRef([]);
   const [user, setUser] = useState(null); // User state for authentication
 
-  useEffect(() => {
-    // Fetch movies from your API
-    const fetchMovies = async () => {
-      try {
-        const response = await axios.get('https://oyjf02ykcf.execute-api.us-east-1.amazonaws.com/dev/items');
-        setMovies(response.data);
-      } catch (error) {
-        console.error('Error fetching movie data:', error);
-      }
-    };
+  // useEffect(() => {
+  //   // Fetch movies from your API
+  //   const fetchMovies = async () => {
+  //     try {
+  //       const response = await axios.get('https://oyjf02ykcf.execute-api.us-east-1.amazonaws.com/dev/items');
+  //       setMovies(response.data);
+  //     } catch (error) {
+  //       console.error('Error fetching movie data:', error);
+  //     }
+  //   };
 
-    // Fetch current authenticated user
-    const fetchUser = async () => {
-      try {
-        const user = await Auth.currentAuthenticatedUser();
-        setUser(user);
-      } catch (error) {
-        console.error('Error fetching authenticated user', error);
-      }
-    };
+  //   // Fetch current authenticated user
+  //   const fetchUser = async () => {
+  //     try {
+  //       const user = await Auth.currentAuthenticatedUser();
+  //       setUser(user);
+  //     } catch (error) {
+  //       console.error('Error fetching authenticated user', error);
+  //     }
+  //   };
 
-    fetchMovies();
-    fetchUser();
-  }, []);
+  //   fetchMovies();
+  //   fetchUser();
+  // }, []);
 
   const settings = {
     dots: true,

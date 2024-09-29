@@ -33,7 +33,7 @@ function Homepage() {
   useEffect(() => {
     const fetchSlide2Movies = async () => {
       try {
-        const response = await axios.get('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/homepage');
+        const response = await axios.get('https://27977u1eql.execute-api.us-east-1.amazonaws.com/dev/homepage');
         setSlide2Movies(response.data);
       } catch (error) {
         console.error('Error fetching movie data:', error);

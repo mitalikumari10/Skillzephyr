@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import axios from 'axios';
 import './Login.css';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../Context';
+import { Context } from '../..';
 
 const Login = () => {
   const navigate = useNavigate();
-  const { setisauthenticated } = useAuth();
+  const { setUser, setIsauthenticated } = useContext(Context);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLogin, setIsLogin] = useState(true);
@@ -15,23 +15,20 @@ const Login = () => {
   const [error, setError] = useState(null);
 
   const handleLogin = async () => {
+    setError(null); // Reset error state
     try {
-      const response = await axios.post('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/login', {
-        username,
-        password
-      });
+      const response = await axios.post(
+        'https://27977u1eql.execute-api.us-east-1.amazonaws.com/dev/login',
+        { username, password },
+        { headers: { 'Content-Type': 'application/json' }, withCredentials: true }
+      );
 
-      // Assuming the response contains an email
-      const emailFromResponse = response.data.email || email;
-
-      // Save JWT token and user details in local storage
-      localStorage.setItem('jwtToken', response.data.token);
-      const userDetails = { username, email: emailFromResponse };
-      localStorage.setItem('user', JSON.stringify(userDetails));
-
-      setisauthenticated(true);
-      toast.success('Logged in!');
-      navigate('/');
+      if (response.status === 200) { // Check for successful response
+        setIsauthenticated(true);
+        setUser(response.data.user); // Assuming the response contains user data
+        toast.success('Logged in!');
+        navigate('/');
+      }
     } catch (err) {
       setError('Error logging in: ' + (err.response?.data?.message || err.message));
       toast.error('Error logging in!');
@@ -39,17 +36,19 @@ const Login = () => {
   };
 
   const handleRegister = async () => {
+    setError(null); // Reset error state
     try {
-      await axios.post('https://tm71vy3a35.execute-api.us-east-1.amazonaws.com/dev/register', {
-        username,
-        password,
-        email
-      });
+      const response = await axios.post(
+        'https://27977u1eql.execute-api.us-east-1.amazonaws.com/dev/register',
+        { username, password, email }
+      );
+
       setIsLogin(true);
-      toast.success('Registration successful!');
+      toast.success(response.data.message);
     } catch (err) {
-      setError('Error registering: ' + (err.response?.data?.message || err.message));
-      toast.error('Error registering!');
+      const errorMessage = err.response?.data?.message || err.message;
+      setError('Error registering: ' + errorMessage);
+      toast.error(errorMessage);
     }
   };
 
@@ -105,7 +104,6 @@ const Login = () => {
             </p>
           </>
         )}
-        
         {error && <p className="error-message">{error}</p>}
       </div>
     </div>
